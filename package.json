@@ -1,0 +1,28 @@
+{
+  "name": "daily-diet-api",
+  "version": "1.0.0",
+  "description": "## FR - Functional Requirements",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anderrf/daily-diet-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anderrf/daily-diet-api/issues"
+  },
+  "homepage": "https://github.com/anderrf/daily-diet-api#readme",
+  "dependencies": {
+    "fastify": "^4.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.3.2",
+    "tsx": "^3.12.7",
+    "typescript": "^5.1.6"
+  }
+}
