@@ -1,10 +1,11 @@
 import app from './app'
+import { env } from './env';
 
 app.get('/meal', async () => {
     return 'Meal informed!'
 })
 app.listen({
-    port: 3333
+    port: env.PORT
 }).then(() => {
     console.log('Server running!')
 }, (err) => {

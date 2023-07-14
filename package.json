@@ -4,7 +4,8 @@
   "description": "## FR - Functional Requirements",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts"
+    "dev": "tsx watch src/server.ts",
+    "knex": "node --no-warnings --loader tsx ./node_modules/knex/bin/cli.js --knexfile ./knexfile.ts"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,11 @@
   },
   "homepage": "https://github.com/anderrf/daily-diet-api#readme",
   "dependencies": {
-    "fastify": "^4.19.0"
+    "dotenv": "^16.0.3",
+    "fastify": "^4.19.0",
+    "knex": "^2.4.2",
+    "sqlite3": "^5.1.6",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/node": "^20.3.2",
