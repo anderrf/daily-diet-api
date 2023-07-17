@@ -5,7 +5,7 @@ export interface User{
     login: string;
     name: string;
     email: string;
-    password: string;
+    password?: string;
 }
 
 export const userDataSchema = z.object({
@@ -26,4 +26,8 @@ export const createUserSchema = z.object({
 export const signinUserSchema = z.object({
     login: z.string(),
     password: z.string()
+});
+
+export const userParamsSchema = z.object({
+    login: z.string()
 });

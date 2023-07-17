@@ -1,8 +1,8 @@
 import { FastifyInstance } from 'fastify';
-import { User, createUserSchema, signinUserSchema } from '../models/user';
-import { knex } from '../database';
+import { User, createUserSchema, signinUserSchema, userParamsSchema } from '../models/user';
 import { randomUUID } from 'crypto';
 import { checkLoggedUserRequiredLogin, checkLoggedUserRequiredLogoff } from '../middlewares/check-logged-user';
+import { userRepository } from '../repository/userRepository';
 
 export async function userRoutes(app: FastifyInstance): Promise<void>{
 
@@ -13,11 +13,8 @@ export async function userRoutes(app: FastifyInstance): Promise<void>{
         },
         async (request, reply) => {
             const user: User = createUserSchema.parse(request.body);
-            await knex('user').insert({
-                ...user,
-                userId: randomUUID()
-            });
-            await reply
+            await userRepository.createUser(user);
+            return reply
                 .status(201)
                 .send();
         }
@@ -30,11 +27,9 @@ export async function userRoutes(app: FastifyInstance): Promise<void>{
         },
         async (request, reply) => {
             const { login, password } = signinUserSchema.parse(request.body);
-            let savedUser = await knex('user')
-                .where({login})
-                .first();
+            let savedUser = await userRepository.getUserByLogin(login);
             if(password === savedUser?.password){
-                await reply
+                return reply
                     .cookie('sessionId', randomUUID(), {
                         path: '/',
                         maxAge: 1000 * 60 * 60 * 24 // 1 day
@@ -43,7 +38,7 @@ export async function userRoutes(app: FastifyInstance): Promise<void>{
                     .send();
             }
             else{
-                await reply
+                return reply
                     .status(401)
                     .send();
             }
@@ -56,10 +51,54 @@ export async function userRoutes(app: FastifyInstance): Promise<void>{
             preHandler: [checkLoggedUserRequiredLogin]
         },
         async (request, reply) => {
-            await reply.clearCookie('sessionId')
+            return reply.clearCookie('sessionId')
                 .status(200)
                 .send();
         }
     );
+
+    app.get(
+        '/:login',
+        {
+            preHandler: [checkLoggedUserRequiredLogin]
+        },
+        async (request, reply) => {
+            const { login } = userParamsSchema.parse(request.params);
+            const user = await userRepository.getSimpleUserDataByLogin(login);
+            return reply
+                .status(200)
+                .send({
+                    user
+                });
+        }
+    );
+
+    app.put(
+        '/update/:login',
+        {
+            preHandler: [checkLoggedUserRequiredLogin]
+        },
+        async (request, reply) => {
+            const { login } = userParamsSchema.parse(request.params);
+            const user = createUserSchema.parse(request.body);
+            const savedUser = await userRepository.getUserByLogin(login);
+            if(!savedUser){
+                return reply
+                    .status(404)
+                    .send();
+            }
+            if(login !== user.login){
+                return reply
+                    .status(403)
+                    .send();
+            }
+            const updatedUser = await userRepository.updateUserByLogin(user);
+            return reply
+                .status(201)
+                .send({
+                    user: updatedUser
+                });
+        }
+    )
 
 }

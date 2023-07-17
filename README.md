@@ -3,8 +3,8 @@
 
 ## FR - Functional Requirements
 
-- [ ] It should be able to create an user
-- [ ] It should be able to identify and differ users between requests
+- [X] It should be able to create an user
+- [X] It should be able to identify and differ users between requests
 - [ ] User should be able to register its meals, containing:
     - Name
     - Description
