@@ -29,6 +29,15 @@ export const mealRepository = {
             .select();
     },
 
+    async getMealsListByUserIdOrderedByOlder(userId: string): Promise<Meal[] | undefined>{
+        return await knex('meal')
+            .where({
+                userId
+            })
+            .select('*')
+            .orderBy('dateTime');
+    },
+
     async updateMealByMealId(meal: Meal): Promise<Meal | undefined>{
         const { mealId, name, description, dateTime, isDiet } = meal!;
         await knex('meal')

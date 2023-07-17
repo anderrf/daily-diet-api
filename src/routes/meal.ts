@@ -1,10 +1,11 @@
-import { FastifyInstance } from "fastify";
-import { checkLoggedUserRequiredLogin } from "../middlewares/check-logged-user";
-import { Meal, createMealSchema, mealIdLoginParamsSchema } from "../models/meal";
-import { mealRepository } from "../repository/mealRepository";
-import { userRepository } from "../repository/userRepository";
-import { checkMealRelatedUser } from "../middlewares/check-meal-related-user";
-import { userParamsSchema } from "../models/user";
+import { FastifyInstance } from 'fastify';
+import { checkLoggedUserRequiredLogin } from '../middlewares/check-logged-user';
+import { Meal, createMealSchema, mealIdLoginParamsSchema } from '../models/meal';
+import { mealRepository } from '../repository/mealRepository';
+import { userRepository } from '../repository/userRepository';
+import { checkMealRelatedUser } from '../middlewares/check-meal-related-user';
+import { userParamsSchema } from '../models/user';
+import { getMealsSummaryFromMealsList } from '../handlers/meals-summary';
 
 
 export async function mealRoutes(app: FastifyInstance): Promise<void>{
@@ -83,6 +84,21 @@ export async function mealRoutes(app: FastifyInstance): Promise<void>{
                 .status(204)
                 .send();
         }
-    )
+    );
+
+    app.get(
+        '/:login/summary',
+        {
+            preHandler: [checkLoggedUserRequiredLogin]
+        },
+        async (request, reply) => {
+            const { login } = userParamsSchema.parse(request.params);
+            const user = await userRepository.getUserByLogin(login);
+            const meals = await mealRepository.getMealsListByUserIdOrderedByOlder(user?.userId!);
+            const summary = getMealsSummaryFromMealsList(meals ?? []);
+            return reply
+                .status(200)
+                .send({summary});
+    });
 
 }

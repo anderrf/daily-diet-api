@@ -1,6 +1,6 @@
-import { randomUUID } from "crypto";
-import { knex } from "../database"
-import { User } from "../models/user";
+import { randomUUID } from 'crypto';
+import { knex } from '../database'
+import { User } from '../models/user';
 
 export const userRepository = {
 
