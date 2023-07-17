@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/anderrf/daily-diet-api#readme",
   "dependencies": {
+    "@fastify/cookie": "^8.3.0",
     "dotenv": "^16.0.3",
     "fastify": "^4.19.0",
     "knex": "^2.4.2",
