@@ -1,6 +1,5 @@
 import { randomUUID } from 'crypto';
 import { knex } from '../database';
-import { User } from '../models/user';
 import { Meal } from '../models/meal';
 
 export const mealRepository = {

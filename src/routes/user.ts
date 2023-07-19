@@ -3,6 +3,7 @@ import { User, createUserSchema, signinUserSchema, userParamsSchema } from '../m
 import { randomUUID } from 'crypto';
 import { checkLoggedUserRequiredLogin, checkLoggedUserRequiredLogoff } from '../middlewares/check-logged-user';
 import { userRepository } from '../repository/userRepository';
+import { checkUserLoginExists } from '../middlewares/check-user-login-exists';
 
 export async function userRoutes(app: FastifyInstance): Promise<void>{
 
@@ -60,7 +61,7 @@ export async function userRoutes(app: FastifyInstance): Promise<void>{
     app.get(
         '/:login',
         {
-            preHandler: [checkLoggedUserRequiredLogin]
+            preHandler: [checkLoggedUserRequiredLogin, checkUserLoginExists]
         },
         async (request, reply) => {
             const { login } = userParamsSchema.parse(request.params);
@@ -76,17 +77,11 @@ export async function userRoutes(app: FastifyInstance): Promise<void>{
     app.put(
         '/update/:login',
         {
-            preHandler: [checkLoggedUserRequiredLogin]
+            preHandler: [checkLoggedUserRequiredLogin, checkUserLoginExists]
         },
         async (request, reply) => {
             const { login } = userParamsSchema.parse(request.params);
             const user = createUserSchema.parse(request.body);
-            const savedUser = await userRepository.getUserByLogin(login);
-            if(!savedUser){
-                return reply
-                    .status(404)
-                    .send();
-            }
             if(login !== user.login){
                 return reply
                     .status(403)
