@@ -36,7 +36,7 @@ describe('User Routes', () => {
             name: 'User',
             email: 'user@email.com',
             login: 'login.user',
-            password: 'randomuser',
+            password: 'randomuser'
         };
         await request(app.server)
             .post('/user/signup')
