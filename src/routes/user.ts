@@ -29,6 +29,11 @@ export async function userRoutes(app: FastifyInstance): Promise<void>{
         async (request, reply) => {
             const { login, password } = signinUserSchema.parse(request.body);
             let savedUser = await userRepository.getUserByLogin(login);
+            if(!savedUser){
+                return reply
+                .status(404)
+                .send();
+            }
             if(password === savedUser?.password){
                 return reply
                     .cookie('sessionId', randomUUID(), {
@@ -89,7 +94,7 @@ export async function userRoutes(app: FastifyInstance): Promise<void>{
             }
             const updatedUser = await userRepository.updateUserByLogin(user);
             return reply
-                .status(201)
+                .status(200)
                 .send({
                     user: updatedUser
                 });

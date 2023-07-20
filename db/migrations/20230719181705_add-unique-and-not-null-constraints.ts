@@ -19,7 +19,8 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
     await knex.schema.alterTable('user', (table) => {
-        table.dropUnique(['login', 'email']);
+        table.dropUnique(['login']);
+        table.dropUnique(['email']);
         table.string('login').nullable().alter();
         table.string('name').nullable().alter();
         table.string('email').nullable().alter();
